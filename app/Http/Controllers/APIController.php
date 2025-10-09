@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class APIController extends Controller
+{
+    public function checkJSON(){
+        return response()->json([
+            'message' => 'fucking json is working',
+            'server_time' => now()->toDateTimeString() // Includes the server's current date and time
+        ]);
+    }
+}

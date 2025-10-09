@@ -1,0 +1,27 @@
+[
+    {
+        "component": "ujInput",
+        "model": "name",
+        "label": "නම",
+        "required": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "english_name",
+        "label": "ඉංග්‍රීසි නම",
+        "required": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "category_code",
+        "label": "වර්ගයේ අංකය",
+        "required": false,
+        "readonly": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    }
+]

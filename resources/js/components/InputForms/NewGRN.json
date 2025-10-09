@@ -1,0 +1,91 @@
+[
+    {
+        "component": "ujInput",
+        "model": "name",
+        "label": "නම",
+        "required": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "max_price",
+        "label": "උපරිම මිල",
+        "required": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "min_price",
+        "label": "අවම මිල",
+        "required": true,
+        "dataType": "email",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "original_price",
+        "label": "මිලදී ගත් මුදල",
+        "required": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "quantity",
+        "label": "ප්‍රමාණය",
+        "required": true,
+        "dataType": "password",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujSelect",
+        "model": "category",
+        "label": "අයිතම වර්ගය",
+        "required": true,
+        "dataType": "password",
+        "items": [],
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "company",
+        "label": "Company",
+        "readonly": true,
+        "required": false,
+        "dataType": "String"
+    },
+    {
+        "component": "ujInput",
+        "model": "invoice_number",
+        "label": "බිල් අංකය",
+        "required": false,
+        "readonly": false,
+        "dataType": "String"
+    },
+    {
+        "component": "ujDatePicker",
+        "model": "invoice_date",
+        "label": "බිල් දිනය",
+        "required": false,
+        "dataType": "String"
+    },
+    {
+        "component": "ujSelect",
+        "model": "selling_unit",
+        "label": "ඒකකය",
+        "required": false,
+        "dataType": "String",
+        "items": []
+    },
+   {
+        "component": "ujInput",
+        "model": "product_id",
+        "label": "අයිතම අංකය",
+        "required": false,
+        "readonly": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    }
+]

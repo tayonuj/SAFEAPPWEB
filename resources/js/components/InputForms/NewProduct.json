@@ -1,0 +1,76 @@
+[
+    {
+        "component": "ujInput",
+        "model": "productName",
+        "label": "නම",
+        "required": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "singlishName",
+        "label": "Singlish නම",
+        "required": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "max_price",
+        "label": "උපරිම මිල",
+        "required": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "min_price",
+        "label": "අවම මිල",
+        "required": true,
+        "dataType": "email",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "quantity",
+        "label": "ප්‍රමාණය",
+        "required": true,
+        "dataType": "password",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujSelect",
+        "model": "categoryName",
+        "label": "අයිතම වර්ගය",
+        "required": true,
+        "dataType": "password",
+        "items": [],
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "company",
+        "label": "Company",
+        "readonly": false,
+        "required": false,
+        "dataType": "String"
+    },
+    {
+        "component": "ujSelect",
+        "model": "unitName",
+        "label": "විකුණුම් ඒකකය",
+        "required": false,
+        "dataType": "String",
+        "items": []
+    },
+   {
+        "component": "ujInput",
+        "model": "product_id",
+        "label": "අයිතම අංකය",
+        "required": false,
+        "readonly": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    }
+]

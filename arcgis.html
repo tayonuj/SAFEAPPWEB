@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Add Local Imagery Layer to 3D Map</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.25/"></script>
+</head>
+<body>
+<div id="viewDiv" style="width:100%; height:100vh;"></div>
+<script>
+    require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/layers/WebTileLayer"
+    ], function(Map, SceneView, WebTileLayer) {
+
+        // Create the map
+        var map = new Map({
+            basemap: "topo-vector",
+            ground: "world-elevation"
+        });
+
+        // Create the SceneView
+        var view = new SceneView({
+            container: "viewDiv",
+            map: map,
+            camera: {
+                position: {
+                    x: 81.7717,
+                    y: 7.3503,
+                    z: 250
+                },
+                tilt: 65
+            }
+        });
+
+        // Add a WebTileLayer from a local server
+        var tileLayer = new WebTileLayer({
+            urlTemplate: "https://services.logifortech.com/tiles/{z}/{x}/{y}"
+        });
+
+        // Add the layer to the map
+        map.add(tileLayer);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+[
+    {
+        "component": "ujInput",
+        "model": "expensesName",
+        "label": "වියදමේ නම",
+        "required": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    },
+
+    {
+        "component": "ujInput",
+        "model": "price",
+        "label": "ගෙවූ මුදල",
+        "required": true,
+        "dataType": "String",
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujSelect",
+        "model": "categoryName",
+        "label": "වියදම් වර්ගය",
+        "required": true,
+        "dataType": "password",
+        "items": [],
+        "validationTypes": ["required"]
+    },
+
+    {
+        "component": "ujSelect",
+        "model": "paymentType",
+        "label": "ගෙවීම් ඒකකය",
+        "required": true,
+        "dataType": "password",
+        "items": ["Cash","Cheque","Credit","BankDeposit","Other"],
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujDatePicker",
+        "model": "paymentDate",
+        "label": "ගෙවීම් කළ දිනය",
+        "required": true,
+        "validationTypes": ["required"]
+    },
+    {
+        "component": "ujInput",
+        "model": "company",
+        "label": "ගෙවීම් කල ආයතනය/පුද්ගලයා ",
+        "readonly": false,
+        "required": false,
+        "dataType": "String"
+    },
+   {
+        "component": "ujInput",
+        "model": "billNo",
+        "label": "ඉන්වොයිස/බිල්පත් අංකය",
+        "dataType": "String",
+        "validationTypes": ["required"]
+    }
+]
