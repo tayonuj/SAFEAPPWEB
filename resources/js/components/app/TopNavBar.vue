@@ -70,7 +70,7 @@ onMounted(() => {
       <a class="navbar-brand" href="/">
         <div class="d-flex align-items-start py-3">
 <!--          <img class="me-2" src="/assets/img/slpa_logo.png" alt="" width="30" />-->
-          <span class="font-sans-serif" style="color:#02adef;font-size: small">Samarasekara<span style="color: #f2b00f;font-size: small">Food Products</span></span>
+          <span class="font-sans-serif" style="color:#02adef;font-size: small">SAFE<span style="color: #f2b00f;font-size: small">APP</span></span>
         </div>
       </a>
       <ul class="navbar-nav navbar-nav-icons ms-auto flex-row align-items-center">
@@ -129,7 +129,7 @@ onMounted(() => {
       <a class="navbar-brand" href="/">
         <div class="d-flex align-items-center py-3">
           <img class="me-2" src="/assets/img/logo.png" alt="" width="50" style="border-radius: 50%;" />
-          <span class="font-sans-serif" style="color:#02adef">සමරසේකර <span style="color: #f2b00f">Foods</span></span>
+          <span class="font-sans-serif" style="color:#02adef">SAFE <span style="color: #f2b00f">App</span></span>
         </div>
       </a>
       <!-- <a class="navbar-brand" href="/temp"><span class="text-white dark__text-white philosopher-bold">BluInvest</span></a> -->

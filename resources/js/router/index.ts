@@ -9,6 +9,16 @@ const router = createRouter({
         { path: '/students', component: () => import('../components/HomePage/Students.vue'), meta: { requiresAuth: true } },
         { path: '/students/add', component: () => import('../components/DataEntry/AddStudent.vue'), meta: { requiresAuth: true } },
         { path: '/students/:studentId', name: 'StudentDetails', component: () => import('../components/DetailPages/StudentDetails/StudentDetails.vue'), meta: { requiresAuth: true }, props: true },
+
+        { path: '/lecturers', component: () => import('../components/HomePage/Lecturers.vue'), meta: { requiresAuth: true } },
+        { path: '/lecturers/add', name: 'AddLecturer', component: () => import('../components/DataEntry/AddLecturer.vue'), meta: { requiresAuth: true }, props: true },
+        { path: '/lecturers/:lecturerId', name: 'LecturerDetails', component: () => import('../components/DetailPages/LecturerDetails/LecturerDetails.vue'), meta: { requiresAuth: true }, props: true },
+
+        { path: '/classes', component: () => import('../components/HomePage/Classes.vue'), meta: { requiresAuth: true } },
+        { path: '/classes/add', component: () => import('../components/DataEntry/AddClass.vue'), meta: { requiresAuth: true } },
+        { path: '/classes/:classId', name: 'ClassDetails', component: () => import('../components/DetailPages/ClassDetails/ClassDetails.vue'), meta: { requiresAuth: true }, props: true },
+
+
         { path: '/login', component: Login, meta: { requiresAuth: false } },
     ],
 });

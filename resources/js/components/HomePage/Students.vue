@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div >
     <!-- Breadcrumb -->
     <div class="mt-3 mb-4">
       <nav
@@ -7,123 +7,137 @@
           aria-label="breadcrumb"
       >
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/public">මුල් පිටුව</a></li>
+          <li class="breadcrumb-item"><a href="/">මුල් පිටුව</a></li>
           <li class="breadcrumb-item active" aria-current="page">සිසු සිසුවියන්</li>
         </ol>
       </nav>
     </div>
 
     <Card>
-      <!-- Header title -->
-      <div class="d-flex mb-3 mt-3 align-items-center justify-content-between">
-        <div class="col">
-          <h5 class="mb-0 text-primary position-relative">
-            <span class="bg-201 dark__bg-1100 pe-3"><b>සිසු ලැයිස්තුව</b></span>
-            <span class="border position-absolute top-50 translate-middle-y w-100 z-n1"></span>
-          </h5>
-          <small class="text-muted">නමෙන් සෙව් – නැතහොත් කාඩ්පත ස්කෑන් කරන්න (HID)</small>
-        </div>
-        <div class="d-flex gap-2">
-          <button class="btn btn-outline-primary d-flex align-items-center" @click="armHid()" :disabled="hid.armed">
-            <i class="fa fa-nfc-signal me-2"></i>
-            <span v-if="!hid.armed">Scan</span>
-            <span v-else>Listening… {{ hid.remainingSec }}s</span>
-          </button>
-          <button class="btn btn-falcon-success" @click="goToAdd()">
-            <i class="fa fa-plus me-1" /> නව සිසුවෙකු
-          </button>
-        </div>
-      </div>
-
       <CardBody>
-        <!-- Search row -->
-        <div class="row g-2 align-items-center mb-3">
-          <div class="col-12 col-md-7">
-            <div class="input-group">
-              <span class="input-group-text bg-100 border-200"><i class="fa fa-search"></i></span>
-              <input
-                  ref="searchInputRef"
-                  type="text"
-                  class="form-control"
-                  :placeholder="'සිසුවාගේ නම'"
-                  v-model="search"
-                  @input="onSearchInput"
-              />
-              <button class="btn btn-outline-secondary" v-if="search" @click="clearSearch">
-                <i class="fa fa-times"></i>
+        <!-- Header title -->
+        <div class="d-flex mb-3 mt-3 align-items-center justify-content-between">
+          <div class="col">
+            <h5 class="mb-0 text-primary position-relative">
+              <span class="bg-201 dark__bg-1100 pe-3"><b>සිසු ලැයිස්තුව</b></span>
+              <span class="border position-absolute top-50 translate-middle-y w-75 z-n1"></span>
+            </h5>
+            <small class="text-muted" style="margin-left: 15px">නමෙන් හෝ දුරකථන අංකයෙන් සොයන්න – නැතහොත් කාඩ්පත ස්කෑන් කරන්න </small>
+          </div>
+          <div class="d-flex gap-2">
+
+            <button class="btn btn-success" @click="goToAdd()">
+              <i class="fa fa-plus me-1" /> නව සිසුවෙකු
+            </button>
+          </div>
+        </div>
+
+        <CardBody>
+          <!-- Search row -->
+          <div class="row g-2 align-items-center mb-3">
+            <div class="col-12 col-md-7">
+              <div class="row">
+                <div class="col-md-5">
+
+                  <div class="search-box" data-list='{"valueNames":["title"]}'>
+                    <form class="position-relative" data-bs-toggle="search" data-bs-display="static">
+                      <input class="form-control search-input fuzzy-search"
+                             type="search"
+                             aria-label="Search"
+                             ref="searchInputRef"
+                             :placeholder="'නම / දුරකථන අංකය'"
+                             v-model="search"
+                             @input="onSearchInput"
+                      />
+                      <span class="fas fa-search search-box-icon"></span>
+                    </form>
+                  </div>
+
+                </div>
+                <div class="col-md-4">
+                  <button class="btn btn-falcon-warning mt-1 btn-sm " style="margin-left: 10px" @click="armHid()" :disabled="hid.armed">
+                    <i class="fa fa-wifi me-2"></i>
+                    <span v-if="!hid.armed">Scan</span>
+                    <span v-else>Listening… {{ hid.remainingSec }}s</span>
+                  </button>
+                </div>
+              </div>
+
+              <small class="text-muted">අඩුම අක්ෂර {{ MIN_SEARCH_CHARS }} යි. සෙවීම ස්වයංක්‍රීයව {{ (DEBOUNCE_MS/1000).toFixed(1) }}s කින් ක්‍රියා කරයි.</small>
+            </div>
+
+            <div class="col-12 col-md-5 d-flex align-items-center justify-content-md-end">
+              <div class="badge rounded-pill bg-200 text-dark me-2">Total: {{ total ?? '…' }}</div>
+              <div class="badge rounded-pill bg-primary text-white">Showing: {{ students.length }}</div>
+            </div>
+          </div>
+
+          <!-- List / Table -->
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle mb-0">
+              <thead class="bg-200">
+              <tr>
+                <th>#</th>
+                <th>නම</th>
+                <th>Student ID</th>
+                <th>දු.අංකය</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-if="initialLoading">
+                <td colspan="6" class="text-center py-4">
+                  <div class="spinner-border spinner-border-sm" role="status" />
+                  <span class="ms-2 text-muted">Loading students…</span>
+                </td>
+              </tr>
+              <tr v-else-if="!students.length">
+                <td colspan="6" class="text-center py-4 text-muted">
+                  <i class="fa fa-users me-2" /> No students found
+                </td>
+              </tr>
+              <tr v-for="(s,idx) in students" :key="s.studentId || idx" class="hover-row">
+                <td>
+                  <div class="avatar avatar-xl">
+                    <img v-if="s.image" class="rounded-circle" :src="s.image" alt="" />
+                    <img v-else class="rounded-circle" src="https://logifortech.com/img/student.jpg" alt="" />
+                  </div>
+                </td>
+
+                <td>
+                  <div class="fw-semibold">{{ s.name || '—' }}</div>
+                </td>
+                <td><span class="badge bg-100 text-dark border">{{ s.studentId }}</span></td>
+                <td>
+                  <div class="fw-semibold">{{ s.guardianMobile || '' }}</div>
+                </td>
+                <td>
+                  <span :class="['badge  badge rounded-pill d-block p-2', s.active ? 'bg-success' : 'bg-danger']">{{ s.active ? 'Active' : 'Inactive' }}</span>
+                </td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-falcon-info" @click="openDetails(s.studentId)">
+                    විස්තර
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Footer / Pagination -->
+          <div class="d-flex align-items-center justify-content-between mt-3">
+            <div class="text-muted small">Page {{ page }} of {{ lastPage }}</div>
+            <div class="btn-group">
+              <button class="btn btn-outline-secondary btn-sm" :disabled="page<=1 || loadingPage" @click="gotoPage(page-1)">
+                <i class="fa fa-chevron-left"></i>
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" :disabled="page>=lastPage || loadingPage" @click="gotoPage(page+1)">
+                <i class="fa fa-chevron-right"></i>
               </button>
             </div>
-            <small class="text-muted">අඩුම අක්ෂර {{ MIN_SEARCH_CHARS }}යි. සෙවීම ස්වයංක්‍රීයව {{ (DEBOUNCE_MS/1000).toFixed(1) }}sකින් ක්‍රියා කරයි.</small>
           </div>
-
-          <div class="col-12 col-md-5 d-flex align-items-center justify-content-md-end">
-            <div class="badge rounded-pill bg-200 text-dark me-2">Total: {{ total ?? '…' }}</div>
-            <div class="badge rounded-pill bg-primary text-white">Showing: {{ students.length }}</div>
-          </div>
-        </div>
-
-        <!-- List / Table -->
-        <div class="table-responsive">
-          <table class="table table-sm align-middle mb-0">
-            <thead class="bg-200">
-            <tr>
-              <th style="width:60px">#</th>
-              <th>නම</th>
-              <th style="width:160px">Student ID</th>
-              <th style="width:110px">අවිධානය</th>
-              <th style="width:80px"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-if="initialLoading">
-              <td colspan="5" class="text-center py-4">
-                <div class="spinner-border spinner-border-sm" role="status" />
-                <span class="ms-2 text-muted">Loading students…</span>
-              </td>
-            </tr>
-            <tr v-else-if="!students.length">
-              <td colspan="5" class="text-center py-4 text-muted">
-                <i class="fa fa-users me-2" /> No students found
-              </td>
-            </tr>
-            <tr v-for="(s,idx) in students" :key="s.studentId" class="hover-row">
-              <td>
-                <div class="avatar avatar-s rounded-circle bg-primary text-white fw-bold">
-                  {{ (s.name?.[0] || '?').toUpperCase() }}
-                </div>
-              </td>
-              <td>
-                <div class="fw-semibold">{{ s.name || '—' }}</div>
-                <div class="text-muted small">Record #{{ (page-1)*PAGE_SIZE + (idx+1) }}</div>
-              </td>
-              <td><span class="badge bg-100 text-dark border">{{ s.studentId }}</span></td>
-              <td>
-                <span :class="['badge', s.active ? 'bg-success' : 'bg-danger']">{{ s.active ? 'Active' : 'Inactive' }}</span>
-              </td>
-              <td class="text-end">
-                <button class="btn btn-sm btn-falcon-info" @click="openDetails(s.studentId)">
-                  විස්තර <i class="fa fa-chevron-right ms-1"></i>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Footer / Pagination -->
-        <div class="d-flex align-items-center justify-content-between mt-3">
-          <div class="text-muted small">
-            Page {{ page }} of {{ lastPage }}
-          </div>
-          <div class="btn-group">
-            <button class="btn btn-outline-secondary btn-sm" :disabled="page<=1 || loadingPage" @click="gotoPage(page-1)">
-              <i class="fa fa-chevron-left"></i>
-            </button>
-            <button class="btn btn-outline-secondary btn-sm" :disabled="page>=lastPage || loadingPage" @click="gotoPage(page+1)">
-              <i class="fa fa-chevron-right"></i>
-            </button>
-          </div>
-        </div>
+        </CardBody>
       </CardBody>
     </Card>
 
@@ -132,7 +146,7 @@
       <div v-if="hid.armed" class="modal-backdrop-custom">
         <div class="modal-card">
           <div class="d-flex align-items-center justify-content-between">
-            <h6 class="mb-0">USB/HID Card Scan</h6>
+            <h6 class="mb-0">Student Card Scan</h6>
             <button class="btn btn-sm btn-link" @click="disarmHid"><i class="fa fa-times"></i></button>
           </div>
           <div class="mt-2 small text-muted">Tap a card on the reader. Listening for input…</div>
@@ -195,7 +209,7 @@ const searchInputRef = ref(null);
 // HID modal + buffer state
 const hid = reactive({
   armed: false,
-  statusText: 'waiting_for_card',
+  statusText: 'Waiting For Card',
   buffer: '',
   lastTick: 0,
   idleTimer: null,
@@ -204,18 +218,28 @@ const hid = reactive({
 });
 const hidInputRef = ref(null);
 
+// --- tiny helper: does the query look like a phone number? ---
+function looksLikePhone(term) {
+  const digits = (term || '').replace(/\D+/g, '');
+  return digits.length >= MIN_SEARCH_CHARS; // ≥ 3 digits
+}
+
 // ===== API helpers (Laravel paginator shape) =====
 async function fetchStudents({ curPage = 1, q = '' } = {}) {
   const isSearching = !!q && q.trim().length >= MIN_SEARCH_CHARS;
+
+  // decide which attribute to search by
+  const attrToSearch = isSearching && looksLikePhone(q) ? 'guardianMobile' : 'name';
 
   const body = {
     collection: 'students',
     paginate: true,
     page: curPage,
-    attr: 'name',
-    search_query: q,
+    attr: attrToSearch,         // <-- name OR guardianMobile
+    search_query: ""+q,
     per_page: PAGE_SIZE,
-    project: JSON.stringify(['studentId', 'name', 'active'])
+    is_numeric: "false",
+    project: JSON.stringify(['studentId', 'name', 'active','image','guardianMobile'])
   };
   const payload = {
     url: isSearching ? `${baseURL}/api/v1/general-queries/searchData` : `${baseURL}/api/v1/general-queries/readData`,
@@ -306,7 +330,7 @@ function goToAdd() {
 function armHid() {
   if (hid.armed) return;
   hid.armed = true;
-  hid.statusText = 'waiting_for_card';
+  hid.statusText = 'Waiting For Card';
   hid.buffer = '';
   hid.lastTick = 0;
   hid.remainingSec = 15;
@@ -401,4 +425,8 @@ onBeforeUnmount(() => disarmHid());
 }
 .fade-enter-active, .fade-leave-active { transition: opacity .15s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+.search-box .search-box-icon {
+  width: 5px !important;
+}
 </style>

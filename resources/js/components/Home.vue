@@ -110,6 +110,6 @@ const pendingInvoices = ref(null);
 
 </script>
 
-<style scoped>
+<style>
 
 </style>
