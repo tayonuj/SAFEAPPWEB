@@ -95,7 +95,7 @@ const cardIconStatData = ref([
     badgeText: '4 shorts',
     icon: 'far fa-money-bill-alt fs-5',
     colorCode:'#FFD54F',
-    href: '/classfees',
+    href: '/attendanceandpayments',
     imageIndex: 2,
     textClass: 'text-warning'
   },

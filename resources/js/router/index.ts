@@ -18,8 +18,22 @@ const router = createRouter({
         { path: '/classes/add', component: () => import('../components/DataEntry/AddClass.vue'), meta: { requiresAuth: true } },
         { path: '/classes/:classId', name: 'ClassDetails', component: () => import('../components/DetailPages/ClassDetails/ClassDetails.vue'), meta: { requiresAuth: true }, props: true },
 
-
+        { path: '/attendance', component: () => import('../components/HomePage/TodayClasses.vue'), meta: { requiresAuth: true } },
+        {
+            path: '/attendance/mark',
+            name: 'AttendanceMarking',
+            component: () => import('../components/DataEntry/AttendanceMarking/AttendanceMarking.vue'),
+            meta: { requiresAuth: true },
+            props: route => ({
+                classIds: String(route.query.classIds || '')
+                    .split(',')
+                    .map(s => s.trim())
+                    .filter(Boolean)
+            })
+        },
         { path: '/login', component: Login, meta: { requiresAuth: false } },
+        { path: '/attendanceandpayments', component: () => import('../components/DetailPages/AttendanceAll.vue'), meta: { requiresAuth: true } },
+
     ],
 });
 
