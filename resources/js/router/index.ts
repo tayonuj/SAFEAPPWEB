@@ -18,7 +18,7 @@ const router = createRouter({
         { path: '/classes/add', component: () => import('../components/DataEntry/AddClass.vue'), meta: { requiresAuth: true } },
         { path: '/classes/:classId', name: 'ClassDetails', component: () => import('../components/DetailPages/ClassDetails/ClassDetails.vue'), meta: { requiresAuth: true }, props: true },
 
-        { path: '/attendance', component: () => import('../components/HomePage/TodayClasses.vue'), meta: { requiresAuth: true } },
+        { path: '/attendance', component: () => import('../components/HomePage/TodayClassesAttendance.vue'), meta: { requiresAuth: true } },
         {
             path: '/attendance/mark',
             name: 'AttendanceMarking',
@@ -34,6 +34,17 @@ const router = createRouter({
         { path: '/login', component: Login, meta: { requiresAuth: false } },
         { path: '/attendanceandpayments', component: () => import('../components/DetailPages/AttendanceAll.vue'), meta: { requiresAuth: true } },
 
+        {
+            path: '/today-classes',
+            name: 'TodayClasses',
+            component: () => import('../components/HomePage/TodayClassesList.vue'),
+        },
+        {
+            path: '/classes/:classId/today',
+            name: 'ClassToday',
+            component: () => import('../components/DetailPages/ClassToday.vue'),
+            props: true,
+        },
     ],
 });
 
