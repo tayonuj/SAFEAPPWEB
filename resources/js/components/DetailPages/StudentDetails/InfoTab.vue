@@ -160,6 +160,10 @@ async function saveChanges() {
         collection: 'students',
         identifier: props.student._id,
         data: JSON.stringify(clean),
+        relatedKey: 'studentOBJId',
+        relatedValue: props.student._id,
+        relatedCollection:JSON.stringify(['class_has_students'])
+
       }),
     };
 
@@ -176,6 +180,10 @@ async function saveChanges() {
     saving.value = false;
     loader?.hide?.();
   }
+}
+
+const updateClassHasStudents = () => {
+
 }
 
 // ==== HID re-link (optional) ====

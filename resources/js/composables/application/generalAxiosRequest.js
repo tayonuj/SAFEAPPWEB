@@ -30,7 +30,7 @@ const generalAxiosRequest =  async (url,payload,allow_loading = true,function_na
         'User-Email': user.Email || 'unknown_user@example.com',
         'User-Name': user.Name || 'Unknown Username',
         'Function-Name': function_name,
-        'Project-ID': 'safecard',
+        'Project-ID': 'safecard_test',
     })
     // }
     if (allow_loading)
@@ -44,7 +44,9 @@ const generalAxiosRequest =  async (url,payload,allow_loading = true,function_na
                     json_data.value = response.data.data; // Update the layerData property
                 }
             }else{
-                notificationHandling("error","No Data Available")
+                console.log("Error",JSON.stringify(response.data))
+
+                // notificationHandling("error","No Data Available")
             }
 
             console.log('MAIN data', json_data.value);

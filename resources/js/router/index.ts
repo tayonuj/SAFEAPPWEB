@@ -18,6 +18,8 @@ const router = createRouter({
         { path: '/classes/add', component: () => import('../components/DataEntry/AddClass.vue'), meta: { requiresAuth: true } },
         { path: '/classes/:classId', name: 'ClassDetails', component: () => import('../components/DetailPages/ClassDetails/ClassDetails.vue'), meta: { requiresAuth: true }, props: true },
 
+
+
         { path: '/attendance', component: () => import('../components/HomePage/TodayClassesAttendance.vue'), meta: { requiresAuth: true } },
         {
             path: '/attendance/mark',
@@ -45,6 +47,12 @@ const router = createRouter({
             component: () => import('../components/DetailPages/ClassToday.vue'),
             props: true,
         },
+
+
+        { path: '/assessments', name: 'AssessmentsHome', component: () => import('../components/DataEntry/Assesment/TestList.vue') },
+        { path: '/assessments/select-class', name: 'SelectClass', component: () => import('../components/DataEntry/Assesment/SelectClass.vue') },
+        { path: '/assessments/create', name: 'CreateTest', component: () => import('../components/DataEntry/Assesment/CreateTest.vue') },
+        { path: '/assessments/:testId/marks', name: 'EnterMarks', component: () => import('../components/DataEntry/Assesment/EnterMarks.vue'), props: true },
     ],
 });
 

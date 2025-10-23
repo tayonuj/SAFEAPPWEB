@@ -160,6 +160,7 @@ import { computed, inject, onMounted, onBeforeUnmount, ref, nextTick } from 'vue
 import { useRoute } from 'vue-router';
 import generalAxiosRequest from '../../composables/application/generalAxiosRequest';
 import notificationHandling from '../../composables/application/notificationHandling';
+import {sendClassEndNotice} from "../../composables/application/whatsappNotifier";
 
 const route    = useRoute();
 const baseURL  = inject('$baseURL');
@@ -318,6 +319,15 @@ async function endClass(){
     });
     endedToday.value = true;
     endedAtIso.value = payload.endedAt;
+
+    endedToday.value = true;
+    endedAtIso.value = payload.endedAt;
+
+    // 🔔 send WhatsApp to all who arrived today
+    const note = 'ස්තූතියි!';
+    const sentCount = await notifyEndClassToArrived(note);
+
+
     notificationHandling('success','Class ended for today.');
   }catch(e){
     notificationHandling('error', e?.message || 'Failed to end class');
@@ -325,6 +335,54 @@ async function endClass(){
     loader?.hide?.();
   }
 }
+
+
+
+// pick guardian first, then fallback to student phone
+function pickPhoneForStudent(studentRow){
+  return (
+      studentRow?.guardianMobile ||
+      studentRow?.guardianMobile_2 ||
+      studentRow?.studentMobile ||
+      null
+  );
+}
+
+function findStudentRow(studentId){
+  return (students.value || []).find(s => String(s.studentId) === String(studentId));
+}
+
+// small pause between sends (to avoid hammering webhook)
+const wait = (ms) => new Promise(res => setTimeout(res, ms));
+
+async function notifyEndClassToArrived(extraNote = ''){
+  const ids = Object.keys(arrivedMap.value || {});
+  if (!ids.length) return 0;
+
+  const date    = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+  const endTime = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', hour12:true });
+
+  let sent = 0;
+  for (const sid of ids){
+    const row   = findStudentRow(sid);
+    const phone = pickPhoneForStudent(row);
+    if (!phone) continue;
+
+    await sendClassEndNotice({
+      to: phone,
+      className: className.value || classId.value,
+      date,
+      endTime,
+      extra: extraNote
+    }).catch(()=>{ /* ignore single send errors */ });
+
+    sent += 1;
+    // gentle pacing (adjust if needed)
+    await wait(150);
+  }
+  return sent;
+}
+
 
 /* ---------- search (name or guardian/student phone) ---------- */
 async function findByGuardianOrStudentMobile(msisdn){

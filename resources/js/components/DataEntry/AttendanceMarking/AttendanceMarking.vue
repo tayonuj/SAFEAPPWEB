@@ -199,6 +199,7 @@ import useHidScanner from "../../../composables/application/attendance/useHidSca
 import generalAxiosRequest from "../../../composables/application/generalAxiosRequest";
 import notificationHandling from "../../../composables/application/notificationHandling";
 import moment from "moment/moment";
+import {sendAttendanceNotice, sendPaymentReceipt} from "../../../composables/application/whatsappNotifier";
 
 const $loading = inject('$loading');
 const baseURL  = inject('$baseURL');
@@ -375,6 +376,9 @@ async function persistAttendance(row){
     })
   };
   await generalAxiosRequest('curl-requests/post', payload, false);
+
+  trySendAttendanceWhatsapp(row).catch(()=>{});
+
 }
 
 // ---------- SAVE PAYMENT ----------
@@ -410,6 +414,9 @@ async function persistPayment({ student, amount }){
     }
     return a;
   });
+
+  trySendPaymentWhatsapp(student, amount).catch(()=>{});
+
 }
 
 // ---------- PREVIEW (PAID) ----------
@@ -614,6 +621,49 @@ function paidAmountFor(row){
   if (row.paymentAmount) return Number(row.paymentAmount) || 0;
   return null;
 }
+
+function findGuardianPhone(studentId, classId) {
+  // Try to find from the already-fetched class_roster cache
+  const rec = (studentsInClass.value || []).find(
+      r => r.studentId === studentId && String(r.classId) === String(classId)
+  );
+  // prefer guardian numbers, then student
+  return (
+      rec?.guardianMobile ||
+      rec?.guardianMobile_2 ||
+      rec?.studentMobile ||
+      ''
+  );
+}
+
+async function trySendAttendanceWhatsapp(row) {
+  const to = findGuardianPhone(row.studentId, row.classId);
+  if (!to) return; // no phone; skip silently
+
+  const date = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+  const time = row.time || new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', hour12:true });
+
+  await sendAttendanceNotice({
+    to,
+    studentName: row.studentName,
+    className: row.className,
+    time,
+    date
+  });
+}
+
+async function trySendPaymentWhatsapp(student, amount) {
+  const to = findGuardianPhone(student.studentId, student.classId);
+  if (!to) return;
+
+  await sendPaymentReceipt({
+    to,
+    studentName: student.studentName,
+    className: student.className,
+    amount: Number(amount) || 0
+  });
+}
+
 </script>
 
 <style scoped>

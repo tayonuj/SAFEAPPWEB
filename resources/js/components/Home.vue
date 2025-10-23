@@ -8,22 +8,22 @@
             <i class="fa fa-school"></i>
           </div>
           <div>
-            <h4 class="mb-1 fw-800 text-primary">Welcome back</h4>
+            <h4 class="mb-1 fw-800 text-primary">ආයුබෝවන් Thissa Higher Education Centre!</h4>
             <div class="text-700 small">
               <i class="fa fa-clock me-1"></i> {{ currentTime }}
               <span class="mx-2">•</span>
-              <span class="badge rounded-pill bg-100 text-dark border">Live stats</span>
+              <span class="badge rounded-pill bg-100 text-dark border">සජීවී දත්ත</span>
             </div>
           </div>
         </div>
 
         <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-primary" :disabled="loadingAll" @click="refreshAll">
+          <button class="btn btn-falcon-primary" :disabled="loadingAll" @click="refreshAll">
             <span v-if="loadingAll" class="spinner-border spinner-border-sm me-2"></span>
             Refresh
           </button>
-          <router-link to="/attendance" class="btn btn-primary">
-            <i class="fa fa-nfc-signal me-2"></i> Mark Attendance
+          <router-link to="/attendance" class="btn btn-warning">
+            <i class="fa fa-wifi-strong"></i> පැමිණීම ළකුනු කරන්න
           </router-link>
         </div>
       </div>
@@ -33,7 +33,7 @@
     <div class="row g-3 mb-3">
       <div class="col-sm-6 col-xl-3">
         <KpiCard
-            title="Attendance Today"
+            title="අද පැමිණීම"
             :value="todayAttendanceCount"
             icon="fa fa-calendar-check"
             tone="success"
@@ -43,7 +43,7 @@
       </div>
       <div class="col-sm-6 col-xl-3">
         <KpiCard
-            title="Students"
+            title="සිසු සිසුවියන්"
             :value="totalStudents"
             icon="fa fa-user-graduate"
             tone="primary"
@@ -53,7 +53,7 @@
       </div>
       <div class="col-sm-6 col-xl-3">
         <KpiCard
-            title="Lecturers"
+            title="ගුරු මහත්ම/මහත්මීන්"
             :value="totalLecturers"
             icon="fa fa-chalkboard-teacher"
             tone="info"
@@ -63,7 +63,7 @@
       </div>
       <div class="col-sm-6 col-xl-3">
         <KpiCard
-            title="Classes"
+            title="පන්ති"
             :value="totalClasses"
             icon="fa fa-layer-group"
             tone="warning"
@@ -80,12 +80,12 @@
           <div class="card-body">
             <div class="d-flex align-items-center justify-content-between mb-2">
               <div>
-                <h6 class="mb-0 fw-800">Payments This Month</h6>
+                <h6 class="mb-0 fw-800">මෙම මස මුදල් ලැබීම්</h6>
                 <small class="text-muted">{{ titleMonth }}</small>
               </div>
               <div class="text-end">
-                <div class="fs-4 fw-800">Rs. {{ monthCollected.toLocaleString() }}</div>
-                <small class="text-700">Paid receipts</small>
+                <div class="fs-4 fw-800">රු. {{ monthCollected.toLocaleString() }}</div>
+                <small class="text-700">ලැබීම් රිසිට්පත් ඇත</small>
               </div>
             </div>
 
@@ -106,13 +106,13 @@
             </div>
 
             <div class="d-flex justify-content-between text-700 small mt-2">
-              <span>Daily totals</span>
-              <span>Max: Rs. {{ monthMaxDay.toLocaleString() }}</span>
+              <span>දිනපතා ලැබීම්</span>
+              <span>උපරිම: රු. {{ monthMaxDay.toLocaleString() }}</span>
             </div>
 
             <div class="mt-3 d-flex flex-wrap gap-2">
-              <span class="badge bg-100 text-dark border">Paid receipts: {{ monthPaidCount }}</span>
-              <span class="badge bg-success">Avg/day: Rs. {{ avgPerDay.toLocaleString() }}</span>
+              <span class="badge bg-100 text-dark border">ලැබීම් රිසිට්පත් : {{ monthPaidCount }}</span>
+              <span class="badge bg-success">දිනපතා සාමාන්‍ය අගය: රු. {{ avgPerDay.toLocaleString() }}</span>
               <router-link class="btn btn-sm btn-outline-primary ms-auto" to="/attendanceandpayments">
                 View details
               </router-link>
@@ -126,7 +126,7 @@
         <div class="card shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex align-items-center justify-content-between mb-2">
-              <h6 class="mb-0 fw-800">Quick Actions</h6>
+              <h6 class="mb-0 fw-800">Quick මෙනුව</h6>
               <button class="btn btn-sm btn-quiet" @click="refreshAll" :disabled="loadingAll">
                 <i class="fa fa-rotate me-1"></i> Sync
               </button>
@@ -134,19 +134,23 @@
 
             <div class="row g-2">
               <div class="col-6">
-                <ActionTile icon="fa fa-qrcode" label="Start Scanner" to="/attendance" hint="Mark today" />
+                <ActionTile icon="fa fa-qrcode" label="පැමිණීම ළකුනු කරන්න" to="/attendance" hint="Mark today" />
               </div>
               <div class="col-6">
-                <ActionTile icon="fa fa-users" label="Manage Students" to="/students" hint="Add / Edit" />
+                <ActionTile icon="fa fa-users" label="සිසු සිසුවියන්ගේ විස්තර" to="/students" hint="ඇතුලත්/වෙනස් කරන්න " />
               </div>
               <div class="col-6">
-                <ActionTile icon="fa fa-wallet" label="Payments" to="/attendanceandpayments" hint="Overview" />
+                <ActionTile icon="fa fa-wallet" label="පැමිණීම් හා ගෙවීම්" to="/attendanceandpayments" hint="සම්පූරණ විස්තර" />
               </div>
               <div class="col-6">
-                <ActionTile icon="fa fa-chalkboard" label="Classes" to="/classes" hint="Schedule" />
+                <ActionTile icon="fa fa-chalkboard" label="පන්ති විස්තර" to="/classes" hint="කාළ සටහන" />
               </div>
               <div class="col-6">
-                <ActionTile icon="fa fa-calendar-day" label="Today’s Classes" to="/today-classes" hint="Live activity" />
+                <ActionTile icon="fa fa-calendar-day" label="අද දින පන්ති" to="/today-classes" hint="සජීවී දත්ත" />
+              </div>
+
+              <div class="col-6">
+                <ActionTile icon="fa fa-book" label="පුනරීක්ශණ විභාග" to="/assessments" hint="පන්ති විභාග හා ළකුණු" />
               </div>
 
             </div>
@@ -157,12 +161,12 @@
               <div class="d-flex align-items-center gap-2">
                 <span class="status-dot bg-success"></span>
                 <div>
-                  <div class="fw-700">API status</div>
-                  <small class="text-700">All systems nominal</small>
+                  <div class="fw-700">දත්ත පද්ධතිය</div>
+                  <small class="text-700">සියල්ලම සාමාන්‍යයයි</small>
                 </div>
               </div>
               <button class="btn btn-sm btn-outline-secondary" @click="refreshAll" :disabled="loadingAll">
-                <i class="fa fa-plug me-1"></i> Recheck
+                <i class="fa fa-plug me-1"></i> නැවත බලන්න
               </button>
             </div>
           </div>

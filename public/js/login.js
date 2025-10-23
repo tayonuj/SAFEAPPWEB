@@ -18863,7 +18863,7 @@ var generalAxiosRequest = /*#__PURE__*/function () {
             'User-Email': user.Email || 'unknown_user@example.com',
             'User-Name': user.Name || 'Unknown Username',
             'Function-Name': function_name,
-            'Project-ID': 'safecard'
+            'Project-ID': 'safecard_test'
           });
           // }
           if (allow_loading) loader = $loading.show();
@@ -18876,7 +18876,9 @@ var generalAxiosRequest = /*#__PURE__*/function () {
                 json_data.value = response.data.data; // Update the layerData property
               }
             } else {
-              (0,_application_notificationHandling__WEBPACK_IMPORTED_MODULE_1__["default"])("error", "No Data Available");
+              console.log("Error", JSON.stringify(response.data));
+
+              // notificationHandling("error","No Data Available")
             }
             console.log('MAIN data', json_data.value);
             // console.log("fucking loader",loader)
