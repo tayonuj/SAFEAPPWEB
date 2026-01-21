@@ -200,6 +200,7 @@ import generalAxiosRequest from "../../../composables/application/generalAxiosRe
 import notificationHandling from "../../../composables/application/notificationHandling";
 import moment from "moment/moment";
 import {sendAttendanceNotice, sendPaymentReceipt} from "../../../composables/application/whatsappNotifier";
+import {sendAttendanceSMS, sendPaymentSMS} from "../../../composables/application/smsNotifierWeb";
 
 const $loading = inject('$loading');
 const baseURL  = inject('$baseURL');
@@ -643,7 +644,7 @@ async function trySendAttendanceWhatsapp(row) {
   const date = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
   const time = row.time || new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', hour12:true });
 
-  await sendAttendanceNotice({
+  await sendAttendanceSMS({
     to,
     studentName: row.studentName,
     className: row.className,
@@ -656,7 +657,7 @@ async function trySendPaymentWhatsapp(student, amount) {
   const to = findGuardianPhone(student.studentId, student.classId);
   if (!to) return;
 
-  await sendPaymentReceipt({
+  await sendPaymentSMS({
     to,
     studentName: student.studentName,
     className: student.className,

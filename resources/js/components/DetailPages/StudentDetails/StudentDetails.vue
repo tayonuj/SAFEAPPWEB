@@ -10,7 +10,7 @@
           aria-label="breadcrumb"
       >
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/public">මුල් පිටුව</a></li>
+          <li class="breadcrumb-item"><a href="/">මුල් පිටුව</a></li>
           <li class="breadcrumb-item"><a href="/students">සිසු සිසුවියන්</a></li>
           <li class="breadcrumb-item active" aria-current="page">විස්තර</li>
         </ol>

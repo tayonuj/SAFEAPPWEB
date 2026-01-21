@@ -161,6 +161,7 @@ import { useRoute } from 'vue-router';
 import generalAxiosRequest from '../../composables/application/generalAxiosRequest';
 import notificationHandling from '../../composables/application/notificationHandling';
 import {sendClassEndNotice} from "../../composables/application/whatsappNotifier";
+import {sendClassEndSMS} from "../../composables/application/smsNotifierWeb";
 
 const route    = useRoute();
 const baseURL  = inject('$baseURL');
@@ -368,7 +369,7 @@ async function notifyEndClassToArrived(extraNote = ''){
     const phone = pickPhoneForStudent(row);
     if (!phone) continue;
 
-    await sendClassEndNotice({
+    await sendClassEndSMS({
       to: phone,
       className: className.value || classId.value,
       date,

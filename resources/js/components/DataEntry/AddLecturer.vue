@@ -7,7 +7,7 @@
           aria-label="breadcrumb"
       >
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/public">මුල් පිටුව</a></li>
+          <li class="breadcrumb-item"><a href="/">මුල් පිටුව</a></li>
           <li class="breadcrumb-item"><a href="/lecturers">ගුරු මහත්ම/මහත්මීන්</a></li>
           <li class="breadcrumb-item active" aria-current="page">නව ගුරුවරයෙකු</li>
         </ol>

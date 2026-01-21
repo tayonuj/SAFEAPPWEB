@@ -48,7 +48,7 @@ class CurlRequestServices
     {
         try {
             $options = [
-                $isRaw ? 'body' : 'form_params' => $data,
+                $isRaw ? 'json' : 'form_params' => $data,
                 'verify' => false
             ];
 
@@ -56,9 +56,12 @@ class CurlRequestServices
             if (!empty($headers)) {
                 $options['headers'] = $headers;
             }
-
+//            if ($isRaw){
+//                return $options['body'];
+//            }
             $response = $this->client->request('POST', $url, $options);
             $response->getBody()->rewind();
+
 
             return json_decode($response->getBody()->getContents(), true);
         } catch (GuzzleException $e) {

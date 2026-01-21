@@ -8,7 +8,7 @@
       >
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/">මුල් පිටුව</a></li>
-          <li class="breadcrumb-item"><a href="/students">සිසු සිසුවියන්</a></li>
+          <li class="breadcrumb-item"><a href="/students">සිසු සීසුවියන්</a></li>
           <li class="breadcrumb-item active" aria-current="page">නව සිසු ඇතුලත් කිරීම</li>
         </ol>
       </nav>
@@ -191,6 +191,41 @@
                     <input class="form-control" v-model.trim="form.guardianOccupation" />
                   </div>
 
+                  <!-- ========================= -->
+                  <!-- NEW: Select classes here  -->
+                  <!-- ========================= -->
+                  <div class="col-12">
+                    <label class="form-label">මෙම ශිෂ්‍යයා යොමුවිය යුතු පන්ති</label>
+                    <small class="text-muted d-block mb-2">මෙමඟින් සිසුවා පන්ති වලට ඇතුලත් වේ</small>
+                    <div class="border rounded p-2 bg-100" style="max-height: 210px; overflow-y: auto;">
+                      <div v-if="classesLoading" class="small text-muted">
+                        <i class="fa fa-spinner fa-spin me-1"></i> පන්ති ලෝඩ් වෙමින්...
+                      </div>
+                      <div v-else-if="allClasses.length === 0" class="small text-muted">පන්ති නොමැත.</div>
+                      <div v-else class="row g-2">
+                        <div
+                            v-for="cls in allClasses"
+                            :key="cls._id || cls.classId"
+                            class="col-12 col-md-6"
+                        >
+                          <div class="form-check">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                :id="`cls_${cls.classId}`"
+                                :value="cls.classId"
+                                v-model="selectedClassIds"
+                            />
+                            <label class="form-check-label" :for="`cls_${cls.classId}`">
+                              {{ cls.className }} <span class="text-muted small">({{ cls.grade }})</span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- ========================= -->
+
                   <div class="col-12 d-grid gap-2 mt-2">
                     <button type="submit" class="btn btn-primary" :disabled="isSaving">
                       <span v-if="!isSaving">තහවුරු කරන්න</span>
@@ -229,7 +264,6 @@
             </div>
           </div>
 
-          <!-- Hidden focused input to capture HID keystrokes -->
           <input
               ref="hidInputRef"
               type="text"
@@ -258,6 +292,11 @@ import notificationHandling from "../../composables/application/notificationHand
 const $loading = inject('$loading');
 const baseURL = inject('$baseURL');
 
+// ===== new: classes state =====
+const allClasses = ref([]);
+const classesLoading = ref(false);
+const selectedClassIds = ref([]); // user picks
+
 // ===== Photo state =====
 const fileRef = ref(null);
 const photoFile = ref(null);
@@ -283,7 +322,7 @@ const form = reactive({
   age: '',
   gender: '',
   studentMobile: '',
-  birthdate: '',                 // ← start empty so user must pick
+  birthdate: '',
   school: '',
   nic: '',
   address: '',
@@ -296,7 +335,6 @@ const form = reactive({
   image: '',
 });
 
-// Validation error flags for UI
 const errors = reactive({
   studentId: false,
   birthdate: false,
@@ -322,30 +360,51 @@ function updateAgeFromBirthdate(){
   }catch(_){ form.age = ''; }
 }
 
-// ===== StudentId from HID scan (required) =====
+// ===== StudentId from HID scan =====
 const studentId = ref('');
 
 // ===== Validation helpers =====
 function validMobile(m){
   const digits = String(m || '').replace(/\D+/g,'');
-  // Simple Sri Lanka style: at least 9–10 digits (07xxxxxxxx)
   return digits.length >= 9;
 }
 function validateRequired(){
-  // reset
   errors.studentId = !studentId.value;
   errors.birthdate = !form.birthdate;
   errors.guardianType = !form.guardianType;
   errors.guardianName = !form.guardianName?.trim();
   errors.guardianMobile = !validMobile(form.guardianMobile);
 
-  // notify first problem
   if (errors.studentId){ notificationHandling('error','කරුණාකර කාඩ්පත ස්කෑන් කරන්න'); return false; }
   if (errors.birthdate){ notificationHandling('error','උපන්දිනය අවශ්‍යයි'); return false; }
   if (errors.guardianType){ notificationHandling('error','භාරකරුවා තෝරන්න'); return false; }
   if (errors.guardianName){ notificationHandling('error','භාරකරුවාගේ නම අවශ්‍යයි'); return false; }
   if (errors.guardianMobile){ notificationHandling('error','වලංගු භාරකරුවාගේ දුරකථන අංකය ඇතුල් කරන්න'); return false; }
   return true;
+}
+
+// ===== load all classes when page open =====
+async function loadAllClasses(){
+  classesLoading.value = true;
+  try{
+    const payload = {
+      url: `${baseURL}/api/v1/general-queries/readData`,
+      data: JSON.stringify({
+        collection: 'classes',
+        attr: 'classId',
+        filter_array: JSON.stringify([])
+      })
+    };
+    const { json_data } = await generalAxiosRequest('curl-requests/post', payload, false);
+    const arr = Array.isArray(json_data?.value) ? json_data.value : [];
+    // sort by name maybe
+    arr.sort((a,b)=> (a.className||'').localeCompare(b.className||''));
+    allClasses.value = arr;
+  }catch(e){
+    allClasses.value = [];
+  }finally{
+    classesLoading.value = false;
+  }
 }
 
 // ===== Save student =====
@@ -358,7 +417,6 @@ async function onSubmit(){
   try{
     let imageUrl = form.image;
     if (photoFile.value && !imageUrl){
-      const file = { name: `student_${studentId.value}.jpg`, type: photoFile.value.type || 'image/jpeg', uri: photoFile.value };
       const {json_data} = await generalFileuploadAxiosRequest('SAFECARD','Students', photoFile.value,false,$loading);
       if (String(json_data.value || '').includes('Error:')){
         notificationHandling('error', json_data.value, 'Upload Error');
@@ -367,6 +425,7 @@ async function onSubmit(){
       imageUrl = `https://storage.googleapis.com/safeapp/Files/${json_data.value}`;
     }
 
+    // 1) save student
     const payload = {
       url: `${baseURL}/api/v1/general-queries/addData`,
       data: JSON.stringify({
@@ -395,7 +454,13 @@ async function onSubmit(){
 
     const { json_data } = await generalAxiosRequest('curl-requests/post', payload, false);
     const saved = json_data?.value || json_data;
+
     if (saved && saved._id){
+      // 2) if there are selected classes -> create class_has_students
+      if (selectedClassIds.value.length){
+        await linkStudentToClasses(saved, selectedClassIds.value);
+      }
+
       notificationHandling('success', `සිසු අංකය: ${studentId.value} — සුරකිණි.`);
       resetForm();
     } else {
@@ -408,6 +473,43 @@ async function onSubmit(){
   }
 }
 
+// ===== link student to selected classes =====
+async function linkStudentToClasses(savedStudent, classIdList){
+  // savedStudent = { _id, ... }
+  // we also know studentId (from ref)
+  for (const cid of classIdList){
+    // find class object
+    const cls = allClasses.value.find(c => String(c.classId) === String(cid));
+    if (!cls) continue;
+
+    const newRow = {
+      classId: cls.classId,
+      classOBJId: cls._id,
+      className: cls.className,
+      grade: cls.grade,
+      studentId: studentId.value,
+      studentOBJId: savedStudent._id,
+      studentName: form.name || 'Student',
+      guardianMobile: form.guardianMobile || '',
+      studentImage: savedStudent.image || form.image || ''
+    };
+
+    const payload = {
+      url: `${baseURL}/api/v1/general-queries/addData`,
+      data: JSON.stringify({
+        collection: 'class_has_students',
+        data: JSON.stringify(newRow)
+      })
+    };
+    // fire one by one (it’s okay because this is only at create time)
+    try{
+      await generalAxiosRequest('curl-requests/post', payload, false);
+    }catch(_){
+      // don’t break whole flow
+    }
+  }
+}
+
 function resetForm(){
   Object.assign(form, {
     name: '', age: '', gender: '', studentMobile: '', birthdate: '', school: '', nic: '', address: '',
@@ -415,27 +517,52 @@ function resetForm(){
   });
   photoFile.value = null; photoPreview.value='';
   studentId.value = '';
+  selectedClassIds.value = [];   // reset selected classes
   linkSuccessId.value = '';
   Object.keys(errors).forEach(k => errors[k] = false);
 }
 
-// ===== HID (USB keyboard) scanning with duplicate check =====
+// ===== HID scan =====
 const hid = reactive({ armed:false, statusText:'Waiting For Card', buffer:'', lastTick:0, idleTimer:null, countdownTimer:null, remainingSec:0 });
 const hidInputRef = ref(null);
+
+// simple touch / mobile detect
+const isTouch = typeof window !== 'undefined'
+    ? ('ontouchstart' in window || navigator.maxTouchPoints > 0)
+    : false;
 
 function armHidScan(){
   if (hid.armed) return;
   hid.armed = true; hid.statusText='Waiting For Card'; hid.buffer=''; hid.lastTick=0; hid.remainingSec=15;
   hid.countdownTimer = setInterval(()=>{ hid.remainingSec -= 1; if (hid.remainingSec<=0) disarmHid(); }, 1000);
-  setTimeout(()=>hidInputRef.value?.focus?.(),30);
+  // DESKTOP: focus hidden input so HID keyboard can type into it
+  if (!isTouch) {
+    setTimeout(() => hidInputRef.value?.focus?.(), 30);
+  } else {
+    // MOBILE / TOUCH: attach global keydown so no keyboard opens
+    document.addEventListener('keydown', onHidKeydown, { passive: false });
+  }
 }
 function disarmHid(){
   hid.armed=false; hid.statusText='idle'; hid.buffer='';
   if (hid.idleTimer){ clearTimeout(hid.idleTimer); hid.idleTimer=null; }
   if (hid.countdownTimer){ clearInterval(hid.countdownTimer); hid.countdownTimer=null; }
+
+  // remove global listener on touch
+  if (isTouch) {
+    document.removeEventListener('keydown', onHidKeydown, { passive: false });
+  }
 }
 function onHidKeydown(e){
   if (!hid.armed) return;
+
+  // prevent mobile from opening keyboard / scroll
+  if (isTouch) {
+    e.preventDefault?.();
+    e.stopPropagation?.();
+  }
+
+
   const now = performance.now();
   const GAP_MS = 120;
   if (!hid.lastTick || now - hid.lastTick > GAP_MS*3) hid.buffer='';
@@ -449,8 +576,6 @@ async function finalizeHid(){
   if (!hid.buffer) return;
   const id = hid.buffer.replace(/\D+/g,'');
   hid.statusText='processing…';
-
-  // Duplicate check in students by studentId
   try{
     const checkPayload = {
       url: `${baseURL}/api/v1/general-queries/readData`,
@@ -468,7 +593,6 @@ async function finalizeHid(){
       return;
     }
   }catch(_){}
-
   studentId.value = id;
   linkSuccessId.value = id;
   errors.studentId = false;
@@ -476,7 +600,9 @@ async function finalizeHid(){
   disarmHid();
 }
 
-onMounted(()=>{ /* keep blank birthdate required; compute age when user picks */ });
+onMounted(()=>{
+  loadAllClasses();
+});
 </script>
 
 <style scoped>

@@ -33,7 +33,7 @@ class GSentryRequestController extends Controller
         $url = $request->input('url');
         $data = $request->input('data');
         $header = $request->input('headers');
-        $is_raw = $request->input('is_raw') === 'true';
+        $is_raw = $request->input('is_raw');
 
         if ($header) {
             $header = json_decode($header, true);
@@ -45,6 +45,7 @@ class GSentryRequestController extends Controller
                 $header['Authorization'] = str_replace('"', '', $header['Authorization']);
             }
         }
+
 //        return $header;
         if ($data) {
             $data = json_decode($data, true);

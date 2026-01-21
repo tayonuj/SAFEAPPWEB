@@ -13,9 +13,10 @@ import axios from 'axios';
  * @param allow_loading
  * @param function_name
  * @param $loading
+ * @param $is_raw
  * @returns {{json_data: Array}} returning the dataset generally. Initial result is null
  */
-const generalAxiosRequest =  async (url,payload,allow_loading = true,function_name,$loading) => {
+const generalAxiosRequest =  async (url,payload,allow_loading = true,function_name,$loading,is_raw = false) => {
     let loader = null;
     const json_data = ref([]);
     let local_user = localStorage.getItem('user');
@@ -29,9 +30,11 @@ const generalAxiosRequest =  async (url,payload,allow_loading = true,function_na
         'Authorization': `Bearer ${localStorage.getItem('Token')}` ,// Retrieve the token dynamically,
         'User-Email': user.Email || 'unknown_user@example.com',
         'User-Name': user.Name || 'Unknown Username',
+        'x-api-key': 'change-me-please',
         'Function-Name': function_name,
-        'Project-ID': 'safecard_test',
+        'Project-ID': 'safecard',
     })
+    payload.is_raw = is_raw;
     // }
     if (allow_loading)
         loader = $loading.show();
